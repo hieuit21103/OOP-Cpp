@@ -9,10 +9,7 @@ public:
         avg=0;
         eng=0;
     }
-    ~Candidate(){
-        avg=NULL;
-        eng=NULL;
-    }
+    ~Candidate(){}
     virtual void in(){
         cout<<"Nhap ho ten: ";
         fflush(stdin);
@@ -28,9 +25,11 @@ public:
         cout<<"Diem tieng Anh: "<<eng<<endl;
     }
     virtual bool check(){
-        if(this->avg >= 7 && this->eng >=400){
+        if(avg >= 7 && eng >=400){
             return true;
         }
+    }
+    virtual bool isPriotized(){
         return false;
     }
 };
@@ -38,6 +37,9 @@ class Priotized_Candidate : public Candidate{
 protected:
     float bonus;
 public:
+    Priotized_Candidate(){
+        bonus=0;
+    }
     void in(){
         Candidate::in();
         cout<<"Nhap diem uu tien:";
@@ -48,14 +50,21 @@ public:
         cout<<"Diem uu tien: "<<bonus<<endl;
     }
     bool check(){
-        if(this->avg+this->bonus >= 7 && this->eng>=400){
+        if(avg+bonus >= 7 && eng>=400){
             return true;
         }
-        return false;
+    }
+    bool isPriotized(){
+        return true;
     }
 };
+void swap(Candidate a,Candidate b){
+    Candidate c=a;
+    a=b;
+    b=c;
+}
 int main(){
-    int n,i,response;
+    int n,i,j,response;
     Candidate *data[100];
     cin>>n;
     cout<<"Nhap danh sach"<<endl;
@@ -76,10 +85,21 @@ int main(){
     for(i=0;i<n;i++){
         data[i]->out();
     }
-    for(i=0;i<(n*3/10);i++){
-        if(data[i]->check()){
-            data[i]->out();
+    Candidate *data1[100];
+    int x = 0;
+    for(i=0;i<n;i++){
+        if(data[i]->isPriotized()){
+            data1[x]=new Priotized_Candidate();
+        }else{
+            data1[x]=new Candidate();
         }
+        if(data[i]->check()){
+            data1[x]=data[i];
+            x++;
+        }
+    }
+    for(i=0;i<=((float)(n*3/10));i++){
+        data1[i]->out();
     }
     return 0;
 }
