@@ -1,13 +1,12 @@
 #include <iostream>
 #include <cstring>
-#include <algorithm>
-#define forp(a,b) for(a=0;a<b;a++);
+#include <limits>
 using namespace std;
 class Staff{
+protected:
+    float hsluong,phucap;
+    char hoten[50];
 public:
-    static char hoten[50];
-    static float hsluong;
-    static float phucap;
     Staff(){
         hsluong=0;
         phucap=0;
@@ -16,58 +15,75 @@ public:
         hsluong=NULL;
         phucap=NULL;
     }
-    friend istream &operator>>(istream &is,Staff &st){
+    virtual void in(){
         cout<<"Ho ten: ";
-        fflush(stdin); is.get(hoten,50);
+        fflush(stdin); cin.get(hoten,50);
         cout<<"He So luong: ";
-        is>>hsluong;
+        cin>>hsluong;
         cout<<"Phu cap: ";
-        is>>phucap;
-        return is;
+        cin>>phucap;
     }
-    friend ostream &operator<<(ostream &os,Staff &st){
-        os<<"Ho ten: "<<hoten<<" ";
-        os<<"He so luong: "<<hsluong<<" ";
-        os<<"Phu cap: "<<phucap<<endl;
-        return os;
+    virtual void out(){
+        cout<<"Ho ten: "<<hoten<<" ";
+        cout<<"He so luong: "<<hsluong<<" ";
+        cout<<"Phu cap: "<<phucap<<endl;
     }
-    float salary(){
+    virtual float salary(){
         return hsluong*1310+phucap;
+    }
+    float getHsl(){
+        return hsluong;
     }
 };
 class Operator : public Staff{
-    static float hschucvu;
+protected:
+    float hschucvu;
 public:
-    friend istream &operator>>(istream &is,Staff &st){
-        cout<<"He so chuc vu";
+    void in(){
+        Staff::in();
+        cout<<"He so chuc vu: ";
         cin>>hschucvu;
-        return is;
     }
-    friend ostream &operator<<(ostream &os,Staff &st){
-        return os;
+    void out(){
+        Staff::out();
     }
     float salary(){
         return (hsluong+hschucvu)*1310+phucap;
     }
 };
+void swap(Staff a,Staff b){
+    Staff c=a;
+    a=b;
+    b=c;
+}
 int main(){
-    Staff *data;
-    Operator *data1;
-    int n,m,i;
-    cin>>n>>m;
-    data = new Staff[n];
-    data1 = new Operator[m];
-    forp(i,n){
-        cin>>data[i];
+    Staff *data[50];
+    int n,i,j,response;
+    cout<<"Nhap so luong Nhan vien/Can bo:";
+    cin>>n;
+    cout<<"Nhap danh sach"<<endl;
+    for(i=0;i<n;i++){
+        cout<<"Nhan vien/Can bo thu "<<i<<":"<<endl;
+        cout<<"Chon nhap: 1-Nhan vien 2-Can bo"<<endl;
+        cin>>response;
+        if(response==1){
+            data[i]=new Staff;
+        }else{
+            data[i]=new Operator;
+        }
+        data[i]->in();
     }
-    forp(i,n){
-        cout<<data[i];
+    for(i=n-1;i>=0;i--){
+        for(j=1;j<=i;j++){
+            if(data[j]->getHsl() < 3.0){
+                if(data[j-1]->getHsl() > data[j]->getHsl()){
+                    swap(data[j-1],data[j]);
+                }
+            }
+        }
     }
-    forp(i,m){
-        cin>>data1[i];
-    }
-    forp(i,m){
-        cout<<data1[i];
+    for(i=0;i<n;i++){
+        data[i]->out();
     }
     return 0;
 }
