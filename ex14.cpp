@@ -74,13 +74,16 @@ int main(){
     }
     for(i=n-1;i>=0;i--){
         for(j=1;j<=i;j++){
-            if(list[j-1]->calculate_fee() > list[j]->calculate_fee()){
+            if(list[j-1]->calculate_fee() < list[j]->calculate_fee()){
                 swap(list[j-1],list[j]);
             }
         }
     }
-    forp(i,0,n/10){
-        if(list[i]->getRDays() > 10){
+    int z = n/10;
+    forp(i,0,z){
+        if(list[i]->getRDays() <= 10){
+            if(z<n) z++;
+        }else{
             list[i]->out();
         }
     }
